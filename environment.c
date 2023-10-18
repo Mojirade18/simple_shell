@@ -1,4 +1,4 @@
-#include "myshell.h"
+#include "shell.h"
 
 int myEnv(info_t *info) {
     printStringList(info->environment);
