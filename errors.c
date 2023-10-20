@@ -1,32 +1,32 @@
 #include "shell.h"
 
 /**
- * _eputs - prints an input string
- * @str: the string to be printed
+ * print_error_message - prints an error message to stderr
+ * @message: the error message to be printed
  *
  * Return: Nothing
  */
-void _eputs(char *str)
+void print_error_message(char *message)
 {
-    int i = 0;
+    int index = 0;
 
-    if (!str)
+    if (!message)
         return;
-    while (str[i] != '\0')
+    while (message[index] != '\0')
     {
-        _eputchar(str[i]);
-        i++;
+        write_error_character(message[index]);
+        index++;
     }
 }
 
 /**
- * _eputchar - writes the character c to stderr
+ * write_error_character - writes the character c to stderr
  * @c: The character to print
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _eputchar(char c)
+int write_error_character(char c)
 {
     static int i;
     static char buf[WRITE_BUF_SIZE];
@@ -42,14 +42,14 @@ int _eputchar(char c)
 }
 
 /**
- * _putfd - writes the character c to the given fd
+ * write_character_to_fd - writes the character c to the given file descriptor
  * @c: The character to print
  * @fd: The file descriptor to write to
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _putfd(char c, int fd)
+int write_character_to_fd(char c, int fd)
 {
     static int i;
     static char buf[WRITE_BUF_SIZE];
@@ -65,22 +65,22 @@ int _putfd(char c, int fd)
 }
 
 /**
- * _putsfd - prints an input string
+ * write_string_to_fd - writes an input string to the given file descriptor
  * @str: the string to be printed
  * @fd: the file descriptor to write to
  *
- * Return: the number of chars put
+ * Return: the number of characters written
  */
-int _putsfd(char *str, int fd)
+int write_string_to_fd(char *str, int fd)
 {
-    int i = 0;
+    int index = 0;
 
     if (!str)
         return (0);
     while (*str)
     {
-        i += _putfd(*str++, fd);
+        index += write_character_to_fd(*str++, fd);
     }
-    return (i);
+    return (index);
 }
 
