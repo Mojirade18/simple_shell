@@ -1,6 +1,3 @@
-memory.c code
-
-
 #include "shell.h"
 
 
@@ -35,5 +32,3 @@ int bfree(void **ptr)
         return (0);
 
 }
-
-
