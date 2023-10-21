@@ -8,7 +8,7 @@
  */
 int display_environment(info_t *info)
 {
-    print_environment_list(info->env);
+    print_list(info->env);
     return (0);
 }
 
@@ -17,22 +17,37 @@ int display_environment(info_t *info)
  * @info: Structure containing potential arguments. Used to maintain
  * @name: environment variable name
  *
- * Return: the value
+ * Return: the value 
  */
-char *get_environment_variable(info_t *info, const char *name)
-{
-    list_t *node = info->env;
-    char *p;
+char *get_environment_variable(info_t *info, const char *name) {
+    char *name_copy = NULL;
+    list_t *node = NULL;
+    char *value = NULL;
 
-    while (node)
-    {
-        p = starts_with(node->str, name);
-        if (p && *p)
-            return (p);
-        node = node->next;
+    if (info->env) {
+        name_copy = malloc(strlen(name) + 1);
+        if (name_copy == NULL) {
+            /* Handle memory allocation failure */
+            return NULL; /* Or do something else as needed */
+        }
+        strcpy(name_copy, name);
+        node = node_starts_with(info->env, name_copy, 0);
+    } else {
+        return NULL; /* Return NULL if env is empty */
     }
-    return (NULL);
+
+    if (node) {
+        char *p = strchr(node->str, '=');
+        if (p) {
+            value = strdup(p + 1);
+        }
+    }
+
+    free(name_copy); /* Free the allocated memory */
+
+    return value; /* Return the value if found, or NULL if not found */
 }
+
 
 /**
  * set_environment_variable - Initialize a new environment variable,
@@ -45,10 +60,10 @@ int set_environment_variable(info_t *info)
 {
     if (info->argc != 3)
     {
-        _eputs("Incorrect number of arguments\n");
+        puts("Incorrect number of arguments\n");
         return (1);
     }
-    if (update_environment_variable(info, info->argv[1], info->argv[2]))
+    if (set_environment_variable(info))
         return (0);
     return (1);
 }
@@ -65,11 +80,11 @@ int unset_environment_variable(info_t *info)
 
     if (info->argc == 1)
     {
-        _eputs("Too few arguments.\n");
+        fprintf(stderr, "Too few arguments.\n");
         return (1);
     }
     for (i = 1; i <= info->argc; i++)
-        remove_environment_variable(info, info->argv[i]);
+        set_environment_variable(info);
 
     return (0);
 }
